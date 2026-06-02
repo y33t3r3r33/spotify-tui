@@ -289,25 +289,25 @@ async fn handle_key(code: KeyCode, app: Arc<Mutex<App>>, spotify: Arc<SpotifyCli
                                 a.repeat = RepeatMode::Off;
                             }
 
-                            // let result = match kind {
-                            //     PlaylistKind::LikedSongs => spotify.play_liked_songs(did).await,
-                            //     PlaylistKind::Dj => {
-                            //         // DJ uses a special radio context — try the URI if it's real,
-                            //         // otherwise nudge user to start it from the Spotify app first
-                            //         if uri == "dj" {
-                            //             Err(anyhow::anyhow!("Start the DJ from Spotify first, then control it here"))
-                            //         } else {
-                            //             spotify.play_context(&uri, did).await
-                            //         }
-                            //     }
-                            //     PlaylistKind::Normal => spotify.play_context(&uri, did).await,
-                            // };
+                            let result = match kind {
+                                PlaylistKind::LikedSongs => spotify.play_liked_songs(did).await,
+                                PlaylistKind::Dj => {
+                                    // DJ uses a special radio context — try the URI if it's real,
+                                    // otherwise nudge user to start it from the Spotify app first
+                                    if uri == "dj" {
+                                        Err(anyhow::anyhow!("Start the DJ from Spotify first, then control it here"))
+                                    } else {
+                                        spotify.play_context(&uri, did).await
+                                    }
+                                }
+                                PlaylistKind::Normal => spotify.play_context(&uri, did).await,
+                            };
 
-                            // let mut a = app.lock().await;
-                            // match result {
-                            //     Ok(_) => a.set_status(format!("▶ Playing: {name}")),
-                            //     Err(e) => a.set_status(format!("{e}")),
-                            // }
+                            let mut a = app.lock().await;
+                            match result {
+                                Ok(_) => a.set_status(format!("▶ Playing: {name}")),
+                                Err(e) => a.set_status(format!("{e}")),
+                            }
                         }
                     }
                     _ => {}
