@@ -4,6 +4,6 @@ Spotify TUI is a utility for your terminal that allows you to control a Spotify 
 
 ## Installation/Run
 
-rustc run
+cargo run
 
 Project made for Stardance by Hackclub
