@@ -166,6 +166,16 @@ pub fn load() -> Config {
     }
 }
 
+pub fn save(cfg: &Config) -> Result<()> {
+    let path = config_path();
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    let content = toml::to_string_pretty(cfg)?;
+    std::fs::write(path, content)?;
+    Ok(())
+}
+
 fn save_defaults(path: &PathBuf) -> Result<()> {
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent)?;
@@ -195,7 +205,7 @@ muted = [120, 120, 120]
 highlight_bg = [40, 40, 40]
 
 # Border style: "plain" | "rounded" | "double" | "thick"
-border_style = "plain"
+border_style = "thick"
 
 [keys]
 # Single characters or special keys: "Tab", "Enter", "Esc", " " (space)
@@ -213,10 +223,10 @@ select      = "Enter"
 
 [layout]
 # Width of the playlist sidebar as a percentage (0-100)
-sidebar_width_pct = 30
+sidebar_width_pct = 10
 
 # Height of the now-playing bar in terminal rows (minimum 4)
-now_playing_height = 5
+now_playing_height = 10
 
 # Show the keybind hints bar at the bottom
 show_hints = true
@@ -229,5 +239,5 @@ show_album         = true
 show_progress_bar  = true
 show_time          = true
 show_shuffle_repeat = true
-show_device        = false   # shows which Spotify device is active
+show_device        = true   # shows which Spotify device is active
 "#;
